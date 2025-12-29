@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}{{ case.title }} - AI Генератор Кейсов{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <div style="margin-bottom: 2rem;">
+        <a href="{{ url_for('my_cases') }}" class="btn btn-secondary" style="margin-bottom: 1rem;">
+            <i class="fas fa-arrow-left"></i>
+            Назад к кейсам
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h1 class="card-title">{{ case.title }}</h1>
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1rem;">
+                <span class="badge badge-{{ case.level }}">
+                    {% if case.level == 'beginner' %}
+                        <i class="fas fa-seedling"></i> Начинающий
+                    {% elif case.level == 'intermediate' %}
+                        <i class="fas fa-chart-line"></i> Средний
+                    {% else %}
+                        <i class="fas fa-fire"></i> Продвинутый
+                    {% endif %}
+                </span>
+                <span class="badge badge-{{ case.status }}">
+                    {% if case.status == 'new' %}
+                        <i class="fas fa-star"></i> Новый
+                    {% elif case.status == 'in_progress' %}
+                        <i class="fas fa-spinner"></i> В процессе
+                    {% elif case.status == 'completed' %}
+                        <i class="fas fa-check"></i> Завершен
+                    {% else %}
+                        <i class="fas fa-archive"></i> Архив
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+
+        <div style="margin-bottom: 2rem;">
+            <h3 style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-file-alt"></i>
+                Описание
+            </h3>
+            <div style="background: rgba(15, 23, 42, 0.5); padding: 1.5rem; border-radius: 8px; border-left: 4px solid var(--primary-color);">
+                <p style="white-space: pre-wrap; line-height: 1.8;">{{ case.description }}</p>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+            <div style="background: rgba(15, 23, 42, 0.5); padding: 1rem; border-radius: 8px;">
+                <div style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 0.5rem;">
+                    <i class="fas fa-calendar-plus"></i> Создан
+                </div>
+                <div style="font-weight: 600;">{{ case.created_at.strftime('%d.%m.%Y %H:%M') }}</div>
+            </div>
+            {% if case.updated_at != case.created_at %}
+            <div style="background: rgba(15, 23, 42, 0.5); padding: 1rem; border-radius: 8px;">
+                <div style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 0.5rem;">
+                    <i class="fas fa-calendar-check"></i> Обновлен
+                </div>
+                <div style="font-weight: 600;">{{ case.updated_at.strftime('%d.%m.%Y %H:%M') }}</div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Форма редактирования -->
+        <div style="border-top: 1px solid var(--border-color); padding-top: 2rem; margin-top: 2rem;">
+            <h3 style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-edit"></i>
+                Редактировать кейс
+            </h3>
+
+            <form method="POST" action="{{ url_for('edit_case', case_id=case.id) }}">
+                {{ form.hidden_tag() }}
+                
+                <div class="form-group">
+                    {{ form.title.label(class="form-label") }}
+                    {{ form.title(class="form-control") }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.description.label(class="form-label") }}
+                    {{ form.description(class="form-control") }}
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                    <div class="form-group">
+                        {{ form.level.label(class="form-label") }}
+                        {{ form.level(class="form-control") }}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form.status.label(class="form-label") }}
+                        {{ form.status(class="form-control") }}
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                    {{ form.submit(class="btn btn-primary") }}
+                    <button type="button" class="btn btn-danger" onclick="if(confirm('Вы уверены, что хотите удалить этот кейс?')) { document.getElementById('delete-form').submit(); }">
+                        <i class="fas fa-trash"></i>
+                        Удалить
+                    </button>
+                </div>
+            </form>
+
+            <form id="delete-form" method="POST" action="{{ url_for('delete_case', case_id=case.id) }}" style="display: none;">
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block title %}Мои кейсы - AI Генератор Кейсов{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+        <h1 style="display: flex; align-items: center; gap: 0.75rem; font-size: 1.75rem;">
+            <i class="fas fa-folder-open"></i>
+            Мои кейсы
+        </h1>
+        <a href="{{ url_for('dashboard') }}" class="btn btn-primary">
+            <i class="fas fa-plus"></i>
+            Создать новый
+        </a>
+    </div>
+
+    <!-- Статистика -->
+    <div class="stats-grid" style="margin-bottom: 2rem;">
+        <div class="stat-card">
+            <div class="stat-value">{{ stats.total }}</div>
+            <div class="stat-label">Всего кейсов</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ stats.by_status.new }}</div>
+            <div class="stat-label">Новых</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ stats.by_status.in_progress }}</div>
+            <div class="stat-label">В процессе</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ stats.by_status.completed }}</div>
+            <div class="stat-label">Завершено</div>
+        </div>
+    </div>
+
+    <!-- Фильтры -->
+    <div class="card" style="margin-bottom: 2rem;">
+        <h3 style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+            <i class="fas fa-filter"></i>
+            Фильтры
+        </h3>
+        <form method="GET" action="{{ url_for('my_cases') }}" class="filters">
+            <div class="filter-group">
+                <label style="color: var(--text-secondary);">Статус:</label>
+                <select name="status" class="form-control" style="width: auto; min-width: 150px;" onchange="this.form.submit()">
+                    <option value="all" {% if status_filter == 'all' %}selected{% endif %}>Все</option>
+                    <option value="new" {% if status_filter == 'new' %}selected{% endif %}>Новые</option>
+                    <option value="in_progress" {% if status_filter == 'in_progress' %}selected{% endif %}>В процессе</option>
+                    <option value="completed" {% if status_filter == 'completed' %}selected{% endif %}>Завершено</option>
+                    <option value="archived" {% if status_filter == 'archived' %}selected{% endif %}>Архив</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label style="color: var(--text-secondary);">Уровень:</label>
+                <select name="level" class="form-control" style="width: auto; min-width: 150px;" onchange="this.form.submit()">
+                    <option value="all" {% if level_filter == 'all' %}selected{% endif %}>Все</option>
+                    <option value="beginner" {% if level_filter == 'beginner' %}selected{% endif %}>Начинающий</option>
+                    <option value="intermediate" {% if level_filter == 'intermediate' %}selected{% endif %}>Средний</option>
+                    <option value="advanced" {% if level_filter == 'advanced' %}selected{% endif %}>Продвинутый</option>
+                </select>
+            </div>
+        </form>
+    </div>
+
+    <!-- Список кейсов -->
+    {% if cases.items %}
+        <div class="cases-grid">
+            {% for case in cases.items %}
+            <div class="case-card" onclick="window.location='{{ url_for('view_case', case_id=case.id) }}'">
+                    <h3 class="case-title">{{ case.title }}</h3>
+                    <p class="case-description">{{ case.description }}</p>
+                    <div class="case-meta">
+                        <span class="badge badge-{{ case.level }}">
+                            {% if case.level == 'beginner' %}
+                                <i class="fas fa-seedling"></i> Начинающий
+                            {% elif case.level == 'intermediate' %}
+                                <i class="fas fa-chart-line"></i> Средний
+                            {% else %}
+                                <i class="fas fa-fire"></i> Продвинутый
+                            {% endif %}
+                        </span>
+                        <span class="badge badge-{{ case.status }}">
+                            {% if case.status == 'new' %}
+                                <i class="fas fa-star"></i> Новый
+                            {% elif case.status == 'in_progress' %}
+                                <i class="fas fa-spinner"></i> В процессе
+                            {% elif case.status == 'completed' %}
+                                <i class="fas fa-check"></i> Завершен
+                            {% else %}
+                                <i class="fas fa-archive"></i> Архив
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div style="margin-top: 1rem; color: var(--text-muted); font-size: 0.85rem;">
+                        <i class="fas fa-calendar"></i> {{ case.created_at.strftime('%d.%m.%Y') }}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Пагинация -->
+        {% if cases.pages > 1 %}
+            <div class="pagination">
+                {% if cases.has_prev %}
+                    <a href="{{ url_for('my_cases', page=cases.prev_num, status=status_filter, level=level_filter) }}">
+                        <i class="fas fa-chevron-left"></i> Назад
+                    </a>
+                {% endif %}
+                
+                {% for page_num in cases.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+                    {% if page_num %}
+                        {% if page_num == cases.page %}
+                            <span class="active">{{ page_num }}</span>
+                        {% else %}
+                            <a href="{{ url_for('my_cases', page=page_num, status=status_filter, level=level_filter) }}">{{ page_num }}</a>
+                        {% endif %}
+                    {% else %}
+                        <span>...</span>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if cases.has_next %}
+                    <a href="{{ url_for('my_cases', page=cases.next_num, status=status_filter, level=level_filter) }}">
+                        Вперед <i class="fas fa-chevron-right"></i>
+                    </a>
+                {% endif %}
+            </div>
+        {% endif %}
+    {% else %}
+        <div class="card text-center" style="padding: 3rem;">
+            <i class="fas fa-folder-open" style="font-size: 4rem; color: var(--text-muted); margin-bottom: 1rem;"></i>
+            <h2 style="margin-bottom: 1rem;">Кейсов пока нет</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                Создайте свой первый кейс с помощью AI генератора!
+            </p>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-primary">
+                <i class="fas fa-magic"></i>
+                Сгенерировать кейс
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+

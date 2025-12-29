@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}Главная - AI Генератор Кейсов{% endblock %}
+
+{% block content %}
+<div class="hero fade-in">
+    <h1>
+        <i class="fas fa-magic"></i>
+        Генерация кейсов с помощью AI
+    </h1>
+    <p>Создавайте уникальные программистские кейсы для практики с помощью искусственного интеллекта</p>
+    
+    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 2rem;">
+        <a href="{{ url_for('register') }}" class="btn btn-primary" style="font-size: 1.1rem; padding: 1rem 2rem;">
+            <i class="fas fa-rocket"></i>
+            Начать бесплатно
+        </a>
+        <a href="{{ url_for('login') }}" class="btn btn-secondary" style="font-size: 1.1rem; padding: 1rem 2rem;">
+            <i class="fas fa-sign-in-alt"></i>
+            Войти
+        </a>
+    </div>
+</div>
+
+<div style="max-width: 1000px; margin: 4rem auto;">
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-value">
+                <i class="fas fa-brain"></i>
+            </div>
+            <div class="stat-label">AI-Генерация</div>
+            <p style="margin-top: 0.5rem; font-size: 0.9rem; color: var(--text-secondary);">
+                Умная генерация кейсов на основе уровня сложности
+            </p>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">
+                <i class="fas fa-layer-group"></i>
+            </div>
+            <div class="stat-label">Разные уровни</div>
+            <p style="margin-top: 0.5rem; font-size: 0.9rem; color: var(--text-secondary);">
+                От начинающего до продвинутого уровня
+            </p>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="stat-label">Отслеживание прогресса</div>
+            <p style="margin-top: 0.5rem; font-size: 0.9rem; color: var(--text-secondary);">
+                Статистика и управление вашими кейсами
+            </p>
+        </div>
+    </div>
+</div>
+
+<div style="max-width: 800px; margin: 4rem auto;">
+    <div class="card">
+        <h2 style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;">
+            <i class="fas fa-lightbulb"></i>
+            Как это работает?
+        </h2>
+        <div style="display: grid; gap: 1.5rem;">
+            <div style="display: flex; gap: 1rem; align-items: start;">
+                <div style="background: var(--primary-color); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                    <span style="color: white; font-weight: bold;">1</span>
+                </div>
+                <div>
+                    <h3 style="margin-bottom: 0.5rem;">Выберите уровень сложности</h3>
+                    <p style="color: var(--text-secondary);">Укажите ваш уровень: начинающий, средний или продвинутый</p>
+                </div>
+            </div>
+            <div style="display: flex; gap: 1rem; align-items: start;">
+                <div style="background: var(--secondary-color); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                    <span style="color: white; font-weight: bold;">2</span>
+                </div>
+                <div>
+                    <h3 style="margin-bottom: 0.5rem;">AI генерирует кейс</h3>
+                    <p style="color: var(--text-secondary);">Наш AI создает уникальный кейс специально для вас</p>
+                </div>
+            </div>
+            <div style="display: flex; gap: 1rem; align-items: start;">
+                <div style="background: var(--accent-color); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                    <span style="color: white; font-weight: bold;">3</span>
+                </div>
+                <div>
+                    <h3 style="margin-bottom: 0.5rem;">Решайте и отслеживайте</h3>
+                    <p style="color: var(--text-secondary);">Работайте над кейсом и отслеживайте свой прогресс</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
